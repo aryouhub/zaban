@@ -2,13 +2,16 @@ import { getAllWords } from '../data/loader';
 import { categories, categoryGroups } from '../data/categories';
 import { CEFR_LEVELS } from '../data/loader';
 import { useWordProgress } from '../hooks/useApp';
+import { useTheme } from '../hooks/useTheme';
 import Icon from './Icon';
+import ThemeSwitcher from './ThemeSwitcher';
 
 interface DashboardProps {
   onBack: () => void;
 }
 
 export default function Dashboard({ onBack }: DashboardProps) {
+  const { themeMode, setThemeMode } = useTheme();
   const { progress, getStats } = useWordProgress();
   const stats = getStats();
   const allWords = getAllWords();
@@ -51,11 +54,13 @@ export default function Dashboard({ onBack }: DashboardProps) {
           <Icon name="chevronRight" size={14} />
           بازگشت
         </button>
-        <h2 className="text-lg font-bold flex items-center gap-2">
-          <Icon name="chart" size={20} className="text-indigo-400" />
-          داشبورد پیشرفت
-        </h2>
-        <div className="w-20" />
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <Icon name="chart" size={20} className="text-indigo-400" />
+            داشبورد پیشرفت
+          </h2>
+          <ThemeSwitcher themeMode={themeMode} setThemeMode={setThemeMode} />
+        </div>
       </div>
 
       {/* Overall Progress */}

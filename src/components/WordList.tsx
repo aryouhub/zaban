@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Word } from '../types';
 import { useSpeech, useWordProgress } from '../hooks/useApp';
+import { useTheme } from '../hooks/useTheme';
 import Icon from './Icon';
+import ThemeSwitcher from './ThemeSwitcher';
 
 interface WordListProps {
   words: Word[];
@@ -9,6 +11,7 @@ interface WordListProps {
 }
 
 export default function WordList({ words, onBack }: WordListProps) {
+  const { themeMode, setThemeMode } = useTheme();
   const [search, setSearch] = useState('');
   const [filterLevel, setFilterLevel] = useState<string>('all');
   const [expandedWord, setExpandedWord] = useState<number | null>(null);
@@ -30,10 +33,13 @@ export default function WordList({ words, onBack }: WordListProps) {
           <Icon name="chevronRight" size={14} />
           بازگشت
         </button>
-        <h2 className="text-lg font-bold flex items-center gap-2">
-          <Icon name="bookOpen" size={20} className="text-emerald-400" />
-          لیست لغات
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <Icon name="bookOpen" size={20} className="text-emerald-400" />
+            لیست لغات
+          </h2>
+          <ThemeSwitcher themeMode={themeMode} setThemeMode={setThemeMode} />
+        </div>
         <span className="text-sm text-gray-400">{filteredWords.length} لغت</span>
       </div>
 

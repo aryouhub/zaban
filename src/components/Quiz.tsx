@@ -1,7 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Word } from '../types';
 import { useSpeech, useWordProgress } from '../hooks/useApp';
+import { useTheme } from '../hooks/useTheme';
 import Icon from './Icon';
+import ThemeSwitcher from './ThemeSwitcher';
 
 interface QuizProps {
   words: Word[];
@@ -11,6 +13,7 @@ interface QuizProps {
 type QuizMode = 'en-to-fa' | 'fa-to-en' | 'listening';
 
 export default function Quiz({ words, onBack }: QuizProps) {
+  const { themeMode, setThemeMode } = useTheme();
   const [mode, setMode] = useState<QuizMode | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -94,10 +97,13 @@ export default function Quiz({ words, onBack }: QuizProps) {
   if (!mode) {
     return (
       <div className="max-w-lg mx-auto px-4 py-8">
-        <button onClick={onBack} className="glass rounded-xl px-4 py-2 hover:bg-white/10 transition-all text-sm mb-6 flex items-center gap-1.5">
-          <Icon name="chevronRight" size={14} />
-          بازگشت
-        </button>
+        <div className="flex items-center justify-between mb-6">
+          <button onClick={onBack} className="glass rounded-xl px-4 py-2 hover:bg-white/10 transition-all text-sm flex items-center gap-1.5">
+            <Icon name="chevronRight" size={14} />
+            بازگشت
+          </button>
+          <ThemeSwitcher themeMode={themeMode} setThemeMode={setThemeMode} />
+        </div>
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-4 shadow-lg shadow-purple-500/20">
             <Icon name="brain" size={32} className="text-white" />
@@ -192,11 +198,14 @@ export default function Quiz({ words, onBack }: QuizProps) {
           <Icon name="x" size={14} className="inline ml-1" />
           خروج
         </button>
-        <div className="flex items-center gap-2">
-          <Icon name="check" size={14} className="text-green-400" />
-          <span className="text-green-400 font-bold">{score}</span>
-          <span className="text-gray-500">/</span>
-          <span className="text-gray-400">{quizWords.length}</span>
+        <div className="flex items-center gap-3">
+          <ThemeSwitcher themeMode={themeMode} setThemeMode={setThemeMode} />
+          <div className="flex items-center gap-2">
+            <Icon name="check" size={14} className="text-green-400" />
+            <span className="text-green-400 font-bold">{score}</span>
+            <span className="text-gray-500">/</span>
+            <span className="text-gray-400">{quizWords.length}</span>
+          </div>
         </div>
       </div>
 

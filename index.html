@@ -9,7 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
-      /* 内联样式确保主题色立即生效，避免闪烁 */
+      /* استایل‌های پایه برای جلوگیری از فلاش */
       html,
       body {
         margin: 0;
@@ -17,41 +17,52 @@
         width: 100%;
         height: 100%;
       }
-      html.light,
-      html.light body {
-        background-color: #ffffff !important;
-        color: #000000;
+      /* تم‌های مختلف */
+      [data-theme="dark"] {
+        background-color: #0f172a;
+        color: #ffffff;
       }
-      html.dark,
-      html.dark body {
-        background-color: #1a1a1a !important;
+      [data-theme="light"] {
+        background-color: #f8fafc;
+        color: #0f172a;
+      }
+      [data-theme="warm"] {
+        background-color: #1c1917;
+        color: #fef3c7;
+      }
+      [data-theme="high-contrast"] {
+        background-color: #000000;
         color: #ffffff;
       }
     </style>
     <script>
-      // 在 React 加载前立即设置主题，避免闪烁
+      // اعمال تم قبل از بارگذاری React برای جلوگیری از فلاش
       (function () {
-        const isInIframe = window.self !== window.top;
-
-        function applyThemeToDOM(theme) {
-          document.documentElement.classList.remove("light", "dark");
-          document.documentElement.classList.add(theme);
-          document.documentElement.setAttribute("data-theme", theme);
+        try {
+          const saved = localStorage.getItem('theme-mode');
+          let theme = 'dark';
+          if (saved === 'light') theme = 'light';
+          else if (saved === 'warm') theme = 'warm';
+          else if (saved === 'high-contrast') theme = 'high-contrast';
+          else if (saved === 'system') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
         }
 
+        // پشتیبانی از iframe
+        const isInIframe = window.self !== window.top;
         if (isInIframe) {
-          // 监听父窗口主动推送的主题消息
           window.addEventListener("message", function (event) {
             if (event.data && typeof event.data.theme === "string") {
               const theme = event.data.theme;
-              if (theme === "light" || theme === "dark") {
-                applyThemeToDOM(theme);
+              if (['dark', 'light', 'warm', 'high-contrast'].includes(theme)) {
+                document.documentElement.setAttribute('data-theme', theme);
               }
             }
           });
-        } else {
-          // 非 iframe 环境，使用默认 light 主题
-          applyThemeToDOM("light");
         }
       })();
     </script>

@@ -3,7 +3,7 @@ import React from 'react';
 type IconName =
   | 'home' | 'chart' | 'card' | 'brain' | 'book' | 'trending'
   | 'house' | 'food' | 'plane' | 'briefcase' | 'heart' | 'leaf' | 'computer' | 'hospital'
-  | 'family' | 'palette' | 'bus' | 'cloud' | 'sun' | 'shirt' | 'dog' | 'bookOpen'
+  | 'family' | 'palette' | 'bus' | 'cloud' | 'sun' | 'moon' | 'shirt' | 'dog' | 'bookOpen'
   | 'dumbbell' | 'clock' | 'phone' | 'graduation' | 'money' | 'music'
   | 'search' | 'speaker' | 'check' | 'x' | 'chevronDown' | 'chevronLeft' | 'chevronRight'
   | 'refresh' | 'trophy' | 'flame' | 'plus' | 'filter' | 'star' | 'bookmark'
@@ -38,6 +38,7 @@ const icons: Record<IconName, React.ReactNode> = {
   bus: <><rect x="4" y="3" width="16" height="16" rx="2" /><path d="M4 11h16M8 19v2M16 19v2M7.5 15h.01M16.5 15h.01" /></>,
   cloud: <><path d="M7 18a5 5 0 010-10 7 7 0 0113.6-2A4.5 4.5 0 0121 14.5 4.5 4.5 0 0116.5 19H7z" /></>,
   sun: <><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></>,
+  moon: <><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></>,
   shirt: <><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z" /></>,
   dog: <><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.473 2.66-5 5.5-.264 1.457.17 3.248 1.5 4.5C4.834 14.918 7 16 7 18v3h4v-5c0-1.1-.9-2-2-2H7.5M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.473 2.66 5 5.5.264 1.457-.17 3.248-1.5 4.5C19.166 14.918 17 16 17 18v3h-4v-5c0-1.1.9-2 2-2h1.5" /></>,
   bookOpen: <><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" /></>,

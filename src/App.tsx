@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { categories, categoryGroups } from './data/categories';
 import { getAllWords, CEFR_LEVELS } from './data/loader';
 import { useLocalStorage, useWordProgress } from './hooks/useApp';
+import { useTheme } from './hooks/useTheme';
 import Icon from './components/Icon';
+import ThemeSwitcher from './components/ThemeSwitcher';
 import FlashCard from './components/FlashCard';
 import Quiz from './components/Quiz';
 import WordList from './components/WordList';
@@ -17,6 +19,7 @@ export default function App() {
   const [streak, setStreak] = useLocalStorage('daily-streak', 0);
   const [lastVisit, setLastVisit] = useLocalStorage('last-visit', '');
   const { getStats } = useWordProgress();
+  const { themeMode, setThemeMode } = useTheme();
   const stats = getStats();
 
   const today = new Date().toDateString();
@@ -63,6 +66,8 @@ export default function App() {
             selectedLevel={selectedLevel}
             setSelectedLevel={setSelectedLevel}
             totalWords={allWords.length}
+            themeMode={themeMode}
+            setThemeMode={setThemeMode}
           />
         );
     }
@@ -71,6 +76,8 @@ export default function App() {
   return <div className="min-h-screen text-white">{renderPage()}</div>;
 }
 
+import { ThemeMode } from './hooks/useTheme';
+
 interface HomePageProps {
   onNavigate: (page: Page, category?: string) => void;
   streak: number;
@@ -78,9 +85,11 @@ interface HomePageProps {
   selectedLevel: string;
   setSelectedLevel: (level: string) => void;
   totalWords: number;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode | ((prev: ThemeMode) => ThemeMode)) => void;
 }
 
-function HomePage({ onNavigate, streak, stats, selectedLevel, setSelectedLevel, totalWords }: HomePageProps) {
+function HomePage({ onNavigate, streak, stats, selectedLevel, setSelectedLevel, totalWords, themeMode, setThemeMode }: HomePageProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       {/* Header */}
@@ -93,10 +102,13 @@ function HomePage({ onNavigate, streak, stats, selectedLevel, setSelectedLevel, 
             <Icon name="chart" size={18} className="text-indigo-400 group-hover:text-indigo-300" />
             <span className="text-sm">آمار من</span>
           </button>
-          <div className="glass rounded-xl px-4 py-2.5 flex items-center gap-2">
-            <Icon name="flame" size={18} className="text-orange-400" />
-            <span className="font-bold text-orange-400">{streak}</span>
-            <span className="text-xs text-gray-400">روز</span>
+          <div className="flex items-center gap-2">
+            <ThemeSwitcher themeMode={themeMode} setThemeMode={setThemeMode} />
+            <div className="glass rounded-xl px-4 py-2.5 flex items-center gap-2">
+              <Icon name="flame" size={18} className="text-orange-400" />
+              <span className="font-bold text-orange-400">{streak}</span>
+              <span className="text-xs text-gray-400">روز</span>
+            </div>
           </div>
         </div>
 

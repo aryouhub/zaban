@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
 import { Word } from '../types';
 import { useSpeech, useWordProgress } from '../hooks/useApp';
+import { useTheme } from '../hooks/useTheme';
 import Icon from './Icon';
+import ThemeSwitcher from './ThemeSwitcher';
 
 interface FlashCardProps {
   words: Word[];
@@ -9,6 +11,7 @@ interface FlashCardProps {
 }
 
 export default function FlashCard({ words, onBack }: FlashCardProps) {
+  const { themeMode, setThemeMode } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showExample, setShowExample] = useState(false);
@@ -134,9 +137,12 @@ export default function FlashCard({ words, onBack }: FlashCardProps) {
           <Icon name="chevronRight" size={14} />
           بازگشت
         </button>
-        <div className="text-sm text-gray-400 flex items-center gap-1.5">
-          <Icon name="layers" size={14} />
-          {currentIndex + 1} / {words.length}
+        <div className="flex items-center gap-2">
+          <ThemeSwitcher themeMode={themeMode} setThemeMode={setThemeMode} />
+          <div className="text-sm text-gray-400 flex items-center gap-1.5">
+            <Icon name="layers" size={14} />
+            {currentIndex + 1} / {words.length}
+          </div>
         </div>
       </div>
 
