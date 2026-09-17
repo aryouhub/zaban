@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { WordProgress } from '../types';
+import { calculateNextReview } from '../data/loader';
 
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -38,40 +40,47 @@ export function useSpeech() {
   return { speak };
 }
 
-export interface WordProgress {
-  wordId: number;
-  correctCount: number;
-  wrongCount: number;
-  lastSeen: number;
-  mastered: boolean;
-}
-
 export function useWordProgress() {
-  const [progress, setProgress] = useLocalStorage<WordProgress[]>('word-progress', []);
+  const [progress, setProgress] = useLocalStorage<WordProgress[]>('word-progress-v2', []);
 
   const updateProgress = useCallback((wordId: number, correct: boolean) => {
     setProgress((prev: WordProgress[]) => {
       const existing = prev.find(p => p.wordId === wordId);
       if (existing) {
+        const quality = correct ? 5 : 1;
+        const { easeFactor, interval } = calculateNextReview(
+          existing.easeFactor,
+          existing.interval,
+          quality
+        );
+        const newCorrectCount = correct ? existing.correctCount + 1 : existing.correctCount;
+        const newWrongCount = correct ? existing.wrongCount : existing.wrongCount + 1;
+
         return prev.map(p =>
           p.wordId === wordId
             ? {
                 ...p,
-                correctCount: correct ? p.correctCount + 1 : p.correctCount,
-                wrongCount: correct ? p.wrongCount : p.wrongCount + 1,
+                correctCount: newCorrectCount,
+                wrongCount: newWrongCount,
                 lastSeen: Date.now(),
-                mastered: (correct ? p.correctCount + 1 : p.correctCount) >= 3 &&
-                          (correct ? p.wrongCount : p.wrongCount + 1) <= 1,
+                mastered: newCorrectCount >= 3 && newWrongCount <= 1,
+                easeFactor,
+                interval,
+                nextReview: Date.now() + interval * 86400000,
               }
             : p
         );
       }
+      const { easeFactor, interval } = calculateNextReview(2.5, 0, correct ? 5 : 1);
       return [...prev, {
         wordId,
         correctCount: correct ? 1 : 0,
         wrongCount: correct ? 0 : 1,
         lastSeen: Date.now(),
         mastered: false,
+        easeFactor,
+        interval,
+        nextReview: Date.now() + interval * 86400000,
       }];
     });
   }, [setProgress]);
@@ -93,5 +102,13 @@ export function useWordProgress() {
     return { total, mastered, learning, totalCorrect, totalWrong, accuracy };
   }, [progress]);
 
-  return { progress, updateProgress, getWordStatus, getStats };
+  const getWordsForReview = useCallback((): number[] => {
+    const now = Date.now();
+    return progress
+      .filter(p => p.nextReview <= now && !p.mastered)
+      .sort((a, b) => a.nextReview - b.nextReview)
+      .map(p => p.wordId);
+  }, [progress]);
+
+  return { progress, updateProgress, getWordStatus, getStats, getWordsForReview };
 }

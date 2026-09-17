@@ -22,7 +22,13 @@
 }
 
 * {
-  font-family: 'Vazirmatn', sans-serif;
+  font-family: 'Vazirmatn', system-ui, sans-serif;
+}
+
+[dir="ltr"] {
+  font-family: system-ui, -apple-system, sans-serif;
+  direction: ltr;
+  text-align: left;
 }
 
 html {
