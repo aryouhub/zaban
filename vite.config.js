@@ -5,7 +5,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   base: "/zaban/",
   plugins: [react(), tailwindcss()],
-  base: "/zaban/",
   server: {
     host: "0.0.0.0",
     port: 3000,
