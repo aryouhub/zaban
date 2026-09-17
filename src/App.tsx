@@ -5,6 +5,7 @@ import { useLocalStorage, useWordProgress } from './hooks/useApp';
 import { useTheme } from './hooks/useTheme';
 import Icon from './components/Icon';
 import ThemeSwitcher from './components/ThemeSwitcher';
+import Layout from './components/Layout';
 import FlashCard from './components/FlashCard';
 import Quiz from './components/Quiz';
 import WordList from './components/WordList';
@@ -47,7 +48,7 @@ export default function App() {
     setCurrentPage(page);
   };
 
-  const renderPage = () => {
+  const renderContent = () => {
     switch (currentPage) {
       case 'flashcard':
         return <FlashCard words={levelFilteredWords} onBack={() => setCurrentPage('home')} />;
@@ -73,7 +74,11 @@ export default function App() {
     }
   };
 
-  return <div className="min-h-screen text-white">{renderPage()}</div>;
+  return (
+    <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
+      <div className="text-white">{renderContent()}</div>
+    </Layout>
+  );
 }
 
 import { ThemeMode } from './hooks/useTheme';
@@ -110,6 +115,13 @@ function HomePage({ onNavigate, streak, stats, selectedLevel, setSelectedLevel, 
               <span className="text-xs text-gray-400">روز</span>
             </div>
           </div>
+        </div>
+
+        {/* Desktop-only: show page title */}
+        <div className="hidden lg:block text-center mb-4">
+          <h1 className="text-2xl font-bold bg-gradient-to-l from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            خوش آمدید
+          </h1>
         </div>
 
         <div className="text-center">
